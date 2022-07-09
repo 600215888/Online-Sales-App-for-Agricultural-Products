@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -28,9 +27,8 @@ import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import ca.uwaterloo.cs.destinations.ProductFormDestination
 import ca.uwaterloo.cs.ui.theme.InstagramPurple
-import ca.uwaterloo.cs.ui.theme.OnlineFoodRetailTheme
 import coil.compose.rememberImagePainter
-import com.ramcosta.composedestinations.DestinationsNavHost
+import com.google.firebase.database.FirebaseDatabase
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import java.io.File
@@ -41,16 +39,14 @@ import java.util.*
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            OnlineFoodRetailTheme {
-                val context = LocalContext.current
-                generateMockData(1, context = context)
-                DestinationsNavHost(navGraph = NavGraphs.root)
-            }
+        val mDatabase = FirebaseDatabase.getInstance().reference;
+        mDatabase.child("users").child("test id").setValue("test user").addOnSuccessListener {
+            println("MainActivity: Saved to Firebase Database")
+        }.addOnFailureListener{
+            println("MainActivity: FAILED")
         }
+        super.onCreate(savedInstanceState)
     }
-
 }
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -176,10 +172,10 @@ private fun generateMockData(amount: Int = 7, context: Context) {
     (1..amount).forEach { value ->
         ProductInformation(
             UUID.randomUUID().toString(),
-            "apple $value",
-            "apple $value description",
-            100 * value + 1,
-            10 * value + 1L,
+            "Apple",
+            "Apple description",
+            999,
+            100,
             "",
             platform1 = false,
             platform2 = false
