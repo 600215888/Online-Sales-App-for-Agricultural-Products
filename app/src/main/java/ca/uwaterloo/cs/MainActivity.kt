@@ -3,28 +3,27 @@ package ca.uwaterloo.cs
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.getSelectedText
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
@@ -73,7 +72,23 @@ fun MainContent(nav: DestinationsNavigator) {
 @Composable
 fun TableScreen(nav: DestinationsNavigator, useTemplate: Boolean) {
     val context = LocalContext.current
+//<<<<<<< Updated upstream
     if(useTemplate) {
+//        CenterAlignedTopAppBar(
+//            title = { Text("Catalogue", color = Color.White) },
+//            navigationIcon = {
+//                IconButton(onClick = {
+//                    addItem(nav, context)
+//                }) {
+//                    Icon(
+//                        imageVector = Icons.Filled.Add,
+//                        contentDescription = "Catalogue",
+//                        tint = Color.White
+//                    )
+//                }
+//            },
+//            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(Color.InstagramPurple)
+//        )
         CenterAlignedTopAppBar(
             title = { Text("Catalogue", color = Color.White) },
             navigationIcon = {
@@ -87,6 +102,70 @@ fun TableScreen(nav: DestinationsNavigator, useTemplate: Boolean) {
                     )
                 }
             },
+            actions = {
+                val openDialog = remember { mutableStateOf(false) }
+                var text by remember { mutableStateOf(TextFieldValue("")) }
+                //var text: TextFieldValue = TextFieldValue("")
+                IconButton(
+                    onClick = {
+                        openDialog.value = true
+                    //addItem(nav, context)
+                    },
+                    content = {Icon(painterResource(id = R.drawable.search,), contentDescription = "search",
+                        modifier= Modifier
+                            .width(20.dp)
+                            .height(20.dp),
+                        tint = Color.White)}
+
+                )
+                if (openDialog.value) {
+                    AlertDialog(
+                        onDismissRequest = { /*TODO*/ },
+                        title = { Text(text = "Search") },
+                        text = {
+                            Column() {
+                                TextField(
+                                    value = text,
+                                    onValueChange = {
+                                        text = it
+                                    }
+                                )
+                                //Log.d("", text.toString())
+                            }
+                        },
+                        confirmButton = {
+                            Button(
+                                onClick = {
+                                    openDialog.value = false
+                                    val tableData = readData(context)
+                                    for (item in tableData) {
+                                        Log.d("item", item.second.name)
+                                        Log.d("text", text.text)
+                                        if (item.second.name == text.text) {
+                                            Log.d("", "HI")
+                                            editItem(nav, item.second, useTemplate)
+                                            break
+                                        }
+                                    }
+                                    text = TextFieldValue("")
+
+                                }) {
+                                Text("Confirm")
+                            }
+                        },
+                        dismissButton = {
+                            Button(
+                                onClick = {
+                                    openDialog.value = false
+                                    text = TextFieldValue("")
+                                }) {
+                                Text("Cancel")
+                            }
+                        }
+                    )
+
+                }
+            },
             colors = TopAppBarDefaults.centerAlignedTopAppBarColors(Color.InstagramPurple)
         )
     }
@@ -96,6 +175,74 @@ fun TableScreen(nav: DestinationsNavigator, useTemplate: Boolean) {
             colors = TopAppBarDefaults.centerAlignedTopAppBarColors(Color.InstagramPurple)
         )
     }
+//=======
+//    CenterAlignedTopAppBar(
+//        title = { Text("Catalogue", color = Color.White) },
+//        navigationIcon = {
+//            IconButton(onClick = {
+//                addItem(nav, context)
+//            }) {
+//                Icon(
+//                    imageVector = Icons.Filled.Add,
+//                    contentDescription = "Catalogue",
+//                    tint = Color.White
+//                )
+//            }
+//        },
+//        actions = {
+//            val openDialog = remember { mutableStateOf(false) }
+//            var text by remember { mutableStateOf(TextFieldValue("")) }
+//            //var text: TextFieldValue = TextFieldValue("")
+//            IconButton(
+//                onClick = {
+//                    openDialog.value = true
+//                //addItem(nav, context)
+//                },
+//                content = {Icon(painterResource(id = R.drawable.search,), contentDescription = "search",
+//                    modifier= Modifier
+//                        .width(20.dp)
+//                        .height(20.dp),
+//                    tint = Color.White)}
+//
+//            )
+//            if (openDialog.value) {
+//                AlertDialog(
+//                    onDismissRequest = { /*TODO*/ },
+//                    title = { Text(text = "Search") },
+//                    text = {
+//                        Column() {
+//                            TextField(
+//                                value = text,
+//                                onValueChange = {
+//                                    text = it
+//                                }
+//                            )
+//                            //print(text)
+//                        }
+//                    },
+//                    confirmButton = {
+//                        Button(
+//                            onClick = {
+//                                openDialog.value = false
+//                            }) {
+//                            Text("Confirm")
+//                        }
+//                    },
+//                    dismissButton = {
+//                        Button(
+//                            onClick = {
+//                                openDialog.value = false
+//                            }) {
+//                            Text("Cancel")
+//                        }
+//                    }
+//                )
+//
+//            }
+//        },
+//        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(Color.InstagramPurple)
+//    )
+//>>>>>>> Stashed changes
     // TODO: REMOVE / UPGRADE MOCK DATA GENERATION IN FINAL PRODUCT
     val tableData = readData(context)
     // Each cell of a column must have the same weight.
